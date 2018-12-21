@@ -6,7 +6,7 @@ from keras.models import load_model, Model, Sequential
 from keras.layers import Flatten, Activation, Dropout, Dense, BatchNormalization, Input, Conv2D, MaxPool2D
 from keras.applications.resnet50 import preprocess_input, decode_predictions, ResNet50
 import pydot
-from keras.callbacks import TensorBoard, ModelCheckpoint
+from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 from keras.utils import plot_model
 from matplotlib import pyplot as plt
 
@@ -135,6 +135,11 @@ if __name__ == "__main__":
                                               mode='auto',
                                               period=1)
 
+        early_stopping_callback = EarlyStopping(monitor='val_loss',
+                                                min_delta=0,
+                                                patience=0,
+                                                verbose=0, mode='auto')
+
 
         BATCH_SIZE = 128
         EPOCHS = 64
@@ -154,13 +159,13 @@ if __name__ == "__main__":
             epochs=EPOCHS,
             validation_data=img_loader(BATCH_SIZE, io=i, mode="test"),
             validation_steps=STEPS_PER_EPOCH,
-            callbacks=[save_model_callback, tensorboard_callback],
+            callbacks=[save_model_callback, tensorboard_callback, early_stopping_callback],
 
             #     workers=4,
             #     pickle_safe=True,
         )
 
-        with open("pickled_history" + str(i) + ".pkl", "wb") as f:
+        with open("pickled_history." + str(i) + ".pkl", "wb") as f:
             pickle.dump(history, f)
         continue
     # Plot training & validation accuracy values
