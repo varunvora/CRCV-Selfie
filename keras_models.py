@@ -111,15 +111,18 @@ def get_model(io: int, type="resnet"):
         losses = {
             "PopularityClass": "categorical_crossentropy"
         }
-        model = load_model("weights/weights.3.01.h5")
-        for layer in model.layers:
+        model_base = load_model("weights/weights.3.01.h5")
+        for layer in model_base.layers:
             layer.trainable = False
 
-        model.layers.pop()  # remove the layer that predicts popularity score
-        model.add(Dense(3, activation='softmax', name="PopularityClass"))
+        layer_name = 'dense_10'
+        model = Dense(3, activation='softmax', name="PopularityClass")(model_base.get_layer(layer_name).output)
+        model = Model(model_base.input, model)
+
         model.compile(optimizer='adam',
                       loss=losses,
                       metrics=['acc', 'mse', 'mae'])
+        model.summary()
 
     elif io == 6:
         losses = {
@@ -153,8 +156,9 @@ def get_model(io: int, type="resnet"):
     return model
 
 if __name__ == "__main__":
+
     for i in range(1, 7):
-        if i != 6:
+        if i != 5:
             continue
         tensorboard_callback = TensorBoard(log_dir="logs",
                                            histogram_freq=0,
@@ -169,7 +173,7 @@ if __name__ == "__main__":
 
         early_stopping_callback = EarlyStopping(monitor='val_loss',
                                                 min_delta=0.001,
-                                                patience=2,
+                                                patience=8,
                                                 verbose=0, mode='auto')
 
 
@@ -177,9 +181,10 @@ if __name__ == "__main__":
         # EPOCHS = 64
         # STEPS_PER_EPOCH = 512
 
-        BATCH_SIZE = 512
-        EPOCHS = 64
-        STEPS_PER_EPOCH = 256
+
+        BATCH_SIZE = 10
+        EPOCHS = 10
+        STEPS_PER_EPOCH = 5
 
         model = get_model(io=i, type="not resnet")
         print(model)
