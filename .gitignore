@@ -3,8 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# All images
-*jpg
+# All dataset images
+*Selfie-dataset/images/*
 
 # Dataset
 *gz
