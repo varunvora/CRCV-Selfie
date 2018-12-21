@@ -7,7 +7,7 @@ from keras.preprocessing import image
 from sklearn.model_selection import train_test_split
 
 def classify_popularity(popularityScore):
-    quantiles = [3.989000, 4.379000, 4.768000]
+    quantiles = [3.989000, 4.768000]
     if(popularityScore <= quantiles[0]):
         return np.array([1, 0, 0])
     elif(popularityScore > quantiles[0] and popularityScore <= quantiles[1]):
