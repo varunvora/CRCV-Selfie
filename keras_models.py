@@ -97,8 +97,7 @@ def get_model(io: int, type="resnet"):
     elif io == 4:
         model = Sequential()
         model.add(Dense(512, input_shape=(36,), activation='sigmoid'))
-        # model.add(Dense(128, activation='sigmoid'))
-        # model.add(Dense(32, activation='sigmoid'))
+        model.add(Dense(64, activation='sigmoid'))
         model.add(Dropout(0.5))
         model.add(Dense(8, activation='relu'))
         model.add(Dense(1, activation='relu', name="Popularity"))
@@ -106,6 +105,36 @@ def get_model(io: int, type="resnet"):
         losses = {
             "Popularity": "mse"
         }
+
+
+    elif io == 5:
+        losses = {
+            "PopularityClass": "categorical_crossentropy"
+        }
+        model = load_model("weights/weights.3.01.h5")
+        for layer in model.layers:
+            layer.trainable = False
+
+        model.layers.pop()  # remove the layer that predicts popularity score
+        model.add(Dense(3, activation='softmax', name="PopularityClass"))
+        model.compile(optimizer='adam',
+                      loss=losses,
+                      metrics=['acc', 'mse', 'mae'])
+
+    elif io == 6:
+        losses = {
+            "PopularityClass": "categorical_crossentropy"
+        }
+
+        model = load_model("weights/weights.4.01.h5")
+        for layer in model.layers:
+            layer.trainable = False
+        model.pop()
+        model.add(Dense(3, activation='softmax', name='PopularityClass'))
+        model.compile(optimizer='adam',
+                      loss=losses,
+                      metrics=['acc', 'mse', 'mae'])
+
 
     model.compile(optimizer='adam',
                   loss=losses,
@@ -124,9 +153,9 @@ def get_model(io: int, type="resnet"):
     return model
 
 if __name__ == "__main__":
-    for i in range(1, 5):
-        # if i != 4:
-        #     continue
+    for i in range(1, 7):
+        if i != 6:
+            continue
         tensorboard_callback = TensorBoard(log_dir="logs",
                                            histogram_freq=0,
                                            write_graph=True,
@@ -144,13 +173,13 @@ if __name__ == "__main__":
                                                 verbose=0, mode='auto')
 
 
-        BATCH_SIZE = 128
-        EPOCHS = 64
-        STEPS_PER_EPOCH = 512
+        # BATCH_SIZE = 128
+        # EPOCHS = 64
+        # STEPS_PER_EPOCH = 512
 
-        # BATCH_SIZE = 1
-        # EPOCHS = 1
-        # STEPS_PER_EPOCH = 1
+        BATCH_SIZE = 512
+        EPOCHS = 64
+        STEPS_PER_EPOCH = 256
 
         model = get_model(io=i, type="not resnet")
         print(model)

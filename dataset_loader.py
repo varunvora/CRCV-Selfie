@@ -6,6 +6,15 @@ from keras.applications.resnet50 import preprocess_input
 from keras.preprocessing import image
 from sklearn.model_selection import train_test_split
 
+def classify_popularity(popularityScore):
+    quantiles = [3.989000, 4.379000, 4.768000]
+    if(popularityScore <= quantiles[0]):
+        return np.array([1, 0, 0])
+    elif(popularityScore > quantiles[0] and popularityScore <= quantiles[1]):
+        return np.array([0, 1, 0])
+    else:
+        return np.array([0, 0, 1])
+
 
 def get_img(img_name: str):
     img_path = dataset_image_dir + img_name + ".jpg"
@@ -75,6 +84,30 @@ def img_loader(batch_size: int, io: int, mode="train", split=0.15):
                     row = data_list[i]
                     X.append(np.asarray(row[2:]))
                     Y.append(np.array(row[col["popularityScore"]]))
+                X = np.asarray(X)
+                Y = np.asarray(Y)
+
+                yield X, Y
+
+            elif io == 5:
+                X, Y = [], []
+                for i in range(batch_start, limit):
+                    row = data_list[i]
+                    X.append(get_img(row[col["imageName"]]))
+                    temp = row[col["popularityScore"]]
+                    Y.append(classify_popularity(temp))
+                X = np.asarray(X)
+                Y = np.asarray(Y)
+
+                yield X, Y
+
+            elif io == 6:
+                X, Y = [], []
+                for i in range(batch_start, limit):
+                    row = data_list[i]
+                    X.append(np.asarray(row[2:]))
+                    temp = row[col["popularityScore"]]
+                    Y.append(classify_popularity(temp))
                 X = np.asarray(X)
                 Y = np.asarray(Y)
 

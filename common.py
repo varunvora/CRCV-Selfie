@@ -42,3 +42,12 @@ col = {
     'harshLighting': 36,
     'dimLighting': 37
 }
+
+best_models = {
+    1: "weights/weights.1.01.h5",
+    2: "weights/weights.1.02.h5",
+    3: "weights/weights.1.03.h5",
+    4: "weights/weights.1.04.h5",
+    5: "weights/weights.1.05.h5",
+    6: "weights/weights.1.06.h5",
+}
