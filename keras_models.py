@@ -149,6 +149,7 @@ def get_model(io: int, type="resnet"):
 
     # Generate a plot of a model
     # pydot.find_graphviz = lambda: True
+
     try:
         plot_model(model, show_shapes=True, to_file='model_image.'+ str(io) + '.png')
     except:
@@ -159,7 +160,7 @@ def get_model(io: int, type="resnet"):
 if __name__ == "__main__":
 
     for i in range(1, 7):
-        if i != 6:
+        if i != 5:
             continue
         tensorboard_callback = TensorBoard(log_dir="logs",
                                            histogram_freq=0,
@@ -178,14 +179,14 @@ if __name__ == "__main__":
                                                 verbose=0, mode='auto')
 
 
-        BATCH_SIZE = 512
-        EPOCHS = 128
-        STEPS_PER_EPOCH = 512
+        # BATCH_SIZE = 1024
+        # EPOCHS = 128
+        # STEPS_PER_EPOCH = 128
 
 
-        # BATCH_SIZE = 10
-        # EPOCHS = 10
-        # STEPS_PER_EPOCH = 5
+        BATCH_SIZE = 256
+        EPOCHS = 10
+        STEPS_PER_EPOCH = 5
 
         model = get_model(io=i, type="not resnet")
         print(model)
