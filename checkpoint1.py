@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from common import col
 
-def analyse_dataset(dataset_file_name="./Selfie-dataset/selfie_dataset.txt"):
+def analyze_dataset(dataset_file_name="./Selfie-dataset/selfie_dataset.txt"):
     global col
     select_col = ['female', 'baby', 'child', 'teenager', 'youth', 'middleAge', 'senior']
 
@@ -20,9 +20,10 @@ def analyse_dataset(dataset_file_name="./Selfie-dataset/selfie_dataset.txt"):
         if 0 in temp:
             count[1] = temp[0]
         df = pd.DataFrame({"x": [-1, 0, 1], "count": count})
-        ax = df.plot.bar(x="x", y="count", rot=0, title=col)
-        plt.show()
+        # ax = df.plot.bar(x="x", y="count", rot=0, title=col, )
+        yield df, col
 
 
 if __name__ == "__main__":
-    analyse_dataset()
+    analyze_dataset()
+
