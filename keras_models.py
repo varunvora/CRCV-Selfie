@@ -128,7 +128,7 @@ if __name__ == "__main__":
                                            histogram_freq=0,
                                            write_graph=True,
                                            write_images=False)
-        save_model_callback = ModelCheckpoint(os.path.join("weights", 'weights.' + str(i) + '{epoch:02d}.h5'),
+        save_model_callback = ModelCheckpoint(os.path.join("weights", 'weights.' + str(i) + '.{epoch:02d}.h5'),
                                               verbose=3,
                                               save_best_only=True,
                                               save_weights_only=False,
