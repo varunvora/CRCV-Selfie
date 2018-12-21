@@ -116,7 +116,10 @@ def get_model(io: int, type="resnet"):
 
     # Generate a plot of a model
     # pydot.find_graphviz = lambda: True
-    plot_model(model, show_shapes=True, to_file='model_image.'+ str(io) + '.png')
+    try:
+        plot_model(model, show_shapes=True, to_file='model_image.'+ str(io) + '.png')
+    except:
+        print("No graphviz to print the model's image")
 
     return model
 
@@ -136,8 +139,8 @@ if __name__ == "__main__":
                                               period=1)
 
         early_stopping_callback = EarlyStopping(monitor='val_loss',
-                                                min_delta=0,
-                                                patience=0,
+                                                min_delta=0.001,
+                                                patience=2,
                                                 verbose=0, mode='auto')
 
 
@@ -149,7 +152,7 @@ if __name__ == "__main__":
         # EPOCHS = 1
         # STEPS_PER_EPOCH = 1
 
-        model = get_model(io=i, type="resnet")
+        model = get_model(io=i, type="not resnet")
         print(model)
         from dataset_loader import img_loader
         history = model.fit_generator(
