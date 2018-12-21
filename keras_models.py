@@ -133,6 +133,7 @@ def get_model(io: int, type="resnet"):
         for layer in model.layers:
             layer.trainable = False
         model.pop()
+        model.add(Dense(4, activation='sigmoid', name='temp'))
         model.add(Dense(3, activation='softmax', name='PopularityClass'))
         model.compile(optimizer='adam',
                       loss=losses,
@@ -158,7 +159,7 @@ def get_model(io: int, type="resnet"):
 if __name__ == "__main__":
 
     for i in range(1, 7):
-        if i != 5:
+        if i != 6:
             continue
         tensorboard_callback = TensorBoard(log_dir="logs",
                                            histogram_freq=0,
@@ -177,14 +178,14 @@ if __name__ == "__main__":
                                                 verbose=0, mode='auto')
 
 
-        # BATCH_SIZE = 128
-        # EPOCHS = 64
-        # STEPS_PER_EPOCH = 512
+        BATCH_SIZE = 512
+        EPOCHS = 128
+        STEPS_PER_EPOCH = 512
 
 
-        BATCH_SIZE = 10
-        EPOCHS = 10
-        STEPS_PER_EPOCH = 5
+        # BATCH_SIZE = 10
+        # EPOCHS = 10
+        # STEPS_PER_EPOCH = 5
 
         model = get_model(io=i, type="not resnet")
         print(model)
