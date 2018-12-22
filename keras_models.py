@@ -71,9 +71,9 @@ def get_model(io: int, type="resnet"):
         }
 
     elif io == 3:
-        popularity_model = Dense(64, activation='relu')(output)
+        popularity_model = Dense(64, activation='sigmoid')(output)
         popularity_model = Dropout(0.5)(popularity_model)
-        popularity_model = Dense(8, activation='relu')(popularity_model)
+        popularity_model = Dense(8, activation='sigmoid')(popularity_model)
         popularity_model = Dense(1, activation='relu', name="Popularity")(popularity_model)
 
         all_attr = Dense(64, activation='relu')(output)
@@ -114,8 +114,10 @@ def get_model(io: int, type="resnet"):
         model_base = load_model("weights/weights.3.01.h5")
         for layer in model_base.layers:
             layer.trainable = False
-
-        layer_name = 'dense_10'
+        # for layer in model_base.layers:
+        #     print(layer.name, layer.input, layer.output)
+        # quit()
+        layer_name = 'dense_3'
         model = Dense(3, activation='softmax', name="PopularityClass")(model_base.get_layer(layer_name).output)
         model = Model(model_base.input, model)
 
@@ -175,7 +177,7 @@ if __name__ == "__main__":
 
         early_stopping_callback = EarlyStopping(monitor='val_loss',
                                                 min_delta=0.001,
-                                                patience=8,
+                                                patience=4,
                                                 verbose=0, mode='auto')
 
 
@@ -185,8 +187,8 @@ if __name__ == "__main__":
 
 
         BATCH_SIZE = 256
-        EPOCHS = 10
-        STEPS_PER_EPOCH = 5
+        EPOCHS = 64
+        STEPS_PER_EPOCH = 64
 
         model = get_model(io=i, type="not resnet")
         print(model)
@@ -204,7 +206,7 @@ if __name__ == "__main__":
             #     pickle_safe=True,
         )
 
-        with open("pickled_history." + str(i) + ".pkl", "wb") as f:
+        with open("history/pickled_history." + str(i) + ".pkl", "wb") as f:
             pickle.dump(history, f)
         continue
     # Plot training & validation accuracy values
